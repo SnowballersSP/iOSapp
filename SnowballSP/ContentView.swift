@@ -12,7 +12,7 @@ struct HomePage: View {
                 VStack(spacing: 30) {
                     NavigationRow(imageName: "scan_area", title: "Scan Area", destination: ScanAreaPage())
                     NavigationRow(imageName: "deploy", title: "Deploy", destination: DeployPage())
-                    NavigationRow(imageName: "timer", title: "Timer", destination: TimerPage())
+                    NavigationRow(imageName: "timer", title: "Timer", destination: TimerArea())
                     NavigationRow(imageName: "statistics", title: "Statistics", destination: StatisticsPage())
                 }
 
@@ -28,7 +28,6 @@ struct NavigationRow<Destination: View>: View {
     var imageName: String
     var title: String
     var destination: Destination
-
     var body: some View {
         NavigationLink(destination: destination) {
             VStack {

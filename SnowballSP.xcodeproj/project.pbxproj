@@ -21,6 +21,8 @@
 		5B42E6A72D5254D7003CA2A5 /* ScanInProgressPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E6A62D5254D7003CA2A5 /* ScanInProgressPage.swift */; };
 		5B42E6A92D526329003CA2A5 /* UseSaltPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E6A82D526329003CA2A5 /* UseSaltPage.swift */; };
 		5B42E6AB2D526346003CA2A5 /* ScanRunningPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E6AA2D526346003CA2A5 /* ScanRunningPage.swift */; };
+		5B42E71B2D543697003CA2A5 /* TimerArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E71A2D543697003CA2A5 /* TimerArea.swift */; };
+		5B42E71D2D543705003CA2A5 /* SelectDayPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E71C2D543705003CA2A5 /* SelectDayPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		5B42E6A62D5254D7003CA2A5 /* ScanInProgressPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanInProgressPage.swift; sourceTree = "<group>"; };
 		5B42E6A82D526329003CA2A5 /* UseSaltPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UseSaltPage.swift; sourceTree = "<group>"; };
 		5B42E6AA2D526346003CA2A5 /* ScanRunningPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanRunningPage.swift; sourceTree = "<group>"; };
+		5B42E71A2D543697003CA2A5 /* TimerArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerArea.swift; sourceTree = "<group>"; };
+		5B42E71C2D543705003CA2A5 /* SelectDayPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectDayPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +116,8 @@
 				5B42E6732D524E12003CA2A5 /* SnowballSPApp.swift */,
 				5B42E6752D524E12003CA2A5 /* ContentView.swift */,
 				5B42E69E2D524F3A003CA2A5 /* TimerPage.swift */,
+				5B42E71A2D543697003CA2A5 /* TimerArea.swift */,
+				5B42E71C2D543705003CA2A5 /* SelectDayPage.swift */,
 				5B42E6A02D524F54003CA2A5 /* StatisticsPage.swift */,
 				5B42E6A22D524F65003CA2A5 /* DeployPage.swift */,
 				5B42E6A82D526329003CA2A5 /* UseSaltPage.swift */,
@@ -280,11 +286,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B42E71B2D543697003CA2A5 /* TimerArea.swift in Sources */,
 				5B42E6A52D524F78003CA2A5 /* ScanAreaPage.swift in Sources */,
 				5B42E6AB2D526346003CA2A5 /* ScanRunningPage.swift in Sources */,
 				5B42E6762D524E12003CA2A5 /* ContentView.swift in Sources */,
 				5B42E6A92D526329003CA2A5 /* UseSaltPage.swift in Sources */,
 				5B42E69F2D524F3A003CA2A5 /* TimerPage.swift in Sources */,
+				5B42E71D2D543705003CA2A5 /* SelectDayPage.swift in Sources */,
 				5B42E6A32D524F65003CA2A5 /* DeployPage.swift in Sources */,
 				5B42E6742D524E12003CA2A5 /* SnowballSPApp.swift in Sources */,
 				5B42E6A72D5254D7003CA2A5 /* ScanInProgressPage.swift in Sources */,
