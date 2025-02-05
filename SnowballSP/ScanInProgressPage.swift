@@ -1,5 +1,5 @@
 import SwiftUI
-//this is for first scan
+
 struct ScanInProgressPage: View {
     var body: some View {
         VStack {
@@ -12,16 +12,6 @@ struct ScanInProgressPage: View {
                 .padding()
 
             Spacer()
-
-            // Back Button to Scan Area Page
-            NavigationLink(destination: ScanAreaPage()) {
-                Text("Back")
-                    .frame(width: 200, height: 50)
-                    .background(Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding()
         }
     }
 }

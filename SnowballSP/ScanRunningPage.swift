@@ -1,5 +1,5 @@
 import SwiftUI
-//this is for deploying
+
 struct ScanRunningPage: View {
     var body: some View {
         VStack {
@@ -12,16 +12,6 @@ struct ScanRunningPage: View {
                 .padding()
 
             Spacer()
-
-            // Back Button to Deploy Page
-            NavigationLink(destination: DeployPage()) {
-                Text("Back")
-                    .frame(width: 200, height: 50)
-                    .background(Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding()
         }
     }
 }

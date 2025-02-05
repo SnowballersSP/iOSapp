@@ -2,47 +2,49 @@ import SwiftUI
 
 struct HomePage: View {
     var body: some View {
-        NavigationView {
+        NavigationStack { // Ensure only HomePage has NavigationStack
             VStack(spacing: 20) {
                 Text("Home Page")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                
-                NavigationLink(destination: ScanAreaPage()) {
-                    Text("Go to Scan Area Page")
-                        .frame(width: 200, height: 50)
-                        .background(Color.purple)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                NavigationLink(destination: DeployPage()) {
-                    Text("Go to Deploy Page")
-                        .frame(width: 200, height: 50)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                    .padding(.top, 20)
+
+                VStack(spacing: 30) {
+                    NavigationRow(imageName: "scan_area", title: "Scan Area", destination: ScanAreaPage())
+                    NavigationRow(imageName: "deploy", title: "Deploy", destination: DeployPage())
+                    NavigationRow(imageName: "timer", title: "Timer", destination: TimerPage())
+                    NavigationRow(imageName: "statistics", title: "Statistics", destination: StatisticsPage())
                 }
 
-                NavigationLink(destination: TimerPage()) {
-                    Text("Go to Timer Page")
-                        .frame(width: 200, height: 50)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                
-                NavigationLink(destination: StatisticsPage()) {
-                    Text("Go to Statistics Page")
-                        .frame(width: 200, height: 50)
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                
-                                
-                
+                Spacer()
             }
             .padding()
+        }
+    }
+}
+
+// Reusable component for navigation
+struct NavigationRow<Destination: View>: View {
+    var imageName: String
+    var title: String
+    var destination: Destination
+
+    var body: some View {
+        NavigationLink(destination: destination) {
+            VStack {
+                Image(imageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .shadow(radius: 5)
+
+                Text(title)
+                    .font(.title2)
+                    .foregroundColor(.blue)
+                    .padding(.top, 5)
+            }
+            .frame(maxWidth: .infinity)
         }
     }
 }
