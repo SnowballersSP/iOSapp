@@ -2,7 +2,10 @@ import SwiftUI
 
 struct SelectDayPage: View {
     @State private var selectedDate = Date()
-    
+    @State private var selectedHour = 12
+    @State private var selectedMinute = 0
+    @State private var selectedPeriod = "AM"
+
     var body: some View {
         VStack {
             // Header Tab
@@ -10,7 +13,7 @@ struct SelectDayPage: View {
                 .font(.title)
                 .fontWeight(.bold)
                 .padding(.top, 20)
-            
+
             // Month Navigation
             HStack {
                 Button(action: previousMonth) {
@@ -18,27 +21,70 @@ struct SelectDayPage: View {
                         .font(.title)
                         .padding()
                 }
-                
+
                 Text(monthYearString)
                     .font(.title2)
                     .frame(width: 200, alignment: .center)
-                
+
                 Button(action: nextMonth) {
                     Image(systemName: "chevron.right")
                         .font(.title)
                         .padding()
                 }
             }
-            
-            // Calendar Grid
+
+            // Calendar Grid (Fixing the missing scope issue)
             CalendarView(selectedDate: $selectedDate)
-            
+
+            // Time Picker Section
+            VStack {
+                Text("Select Time")
+                    .font(.headline)
+                    .padding(.top, 10)
+
+                HStack {
+                    // Hour Picker
+                    Picker("Hour", selection: $selectedHour) {
+                        ForEach(1...12, id: \.self) { hour in
+                            Text("\(hour)").tag(hour)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                    .frame(width: 80)
+
+                    Text(":")
+
+                    // Minute Picker
+                    Picker("Minute", selection: $selectedMinute) {
+                        ForEach(0..<60, id: \.self) { minute in
+                            Text(String(format: "%02d", minute)).tag(minute)
+                        }
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                    .frame(width: 80)
+
+                    // AM/PM Picker
+                    Picker("AM/PM", selection: $selectedPeriod) {
+                        Text("AM").tag("AM")
+                        Text("PM").tag("PM")
+                    }
+                    .pickerStyle(WheelPickerStyle())
+                    .frame(width: 80)
+                }
+                .frame(height: 100) // Set height to ensure visibility
+            }
+
             Spacer()
-            
+
             // Confirm Selection Button
-            NavigationLink(destination: ConfirmTimePage(selectedDate: selectedDate)) {
-                Text("Confirm Date")
-                    .frame(width: 200, height: 50)
+            NavigationLink(destination: ConfirmTimePage(
+                selectedDate: selectedDate,
+                selectedHour: selectedHour,
+                selectedMinute: selectedMinute,
+                selectedPeriod: selectedPeriod
+            )) {
+                Text("Confirm Date & Time")
+                    .frame(width: 250, height: 50)
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
@@ -47,7 +93,7 @@ struct SelectDayPage: View {
         }
         .padding()
     }
-    
+
     // Computed property to format month & year
     private var monthYearString: String {
         let formatter = DateFormatter()
@@ -70,10 +116,10 @@ struct SelectDayPage: View {
     }
 }
 
-// Calendar View
+// ✅ Adding CalendarView here to ensure it is in scope
 struct CalendarView: View {
     @Binding var selectedDate: Date
-    
+
     var body: some View {
         VStack {
             // Days of the week
@@ -84,7 +130,7 @@ struct CalendarView: View {
                         .fontWeight(.bold)
                 }
             }
-            
+
             // Days of the month
             let days = generateCalendarDays()
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
@@ -103,41 +149,13 @@ struct CalendarView: View {
         }
         .padding()
     }
-    
-    // Generates the days of the selected month
-//    private func generateCalendarDays() -> [Date] {
-//        var dates: [Date] = []
-//        let calendar = Calendar.current
-//        let currentMonth = calendar.component(.month, from: selectedDate)
-////        let range = calendar.range(of: .day, in: .month, for: selectedDate) ?? 1...30
-////        let range = (calendar.range(of: .day, in: .month, for: selectedDate) ?? 1...30).lowerBound..<(calendar.range(of: .day, in: .month, for: selectedDate)?.upperBound ?? 31)
-//        if let range = calendar.range(of: .day, in: .month, for: selectedDate) {
-//            for day in range {
-//                if let date = calendar.date(from: DateComponents(
-//                    year: calendar.component(.year, from: selectedDate),
-//                    month: calendar.component(.month, from: selectedDate),
-//                    day: day))
-//                {
-//                    dates.append(date)
-//                }
-//            }
-//        }
-//
-//        for day in range {
-//            if let date = calendar.date(from: DateComponents(year: calendar.component(.year, from: selectedDate), month: currentMonth, day: day)) {
-//                dates.append(date)
-//            }
-//        }
-//        
-//        return dates
-//    }
+
     private func generateCalendarDays() -> [Date] {
         var dates: [Date] = []
         let calendar = Calendar.current
         let currentMonth = calendar.component(.month, from: selectedDate)
         let currentYear = calendar.component(.year, from: selectedDate)
 
-        // Safely unwrap the range of days in the selected month
         if let dayRange = calendar.range(of: .day, in: .month, for: selectedDate) {
             for day in dayRange {
                 if let date = calendar.date(from: DateComponents(year: currentYear, month: currentMonth, day: day)) {
@@ -145,31 +163,48 @@ struct CalendarView: View {
                 }
             }
         }
-
         return dates
     }
 
-    // Checks if two dates are the same
     private func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
         let calendar = Calendar.current
         return calendar.isDate(date1, inSameDayAs: date2)
     }
 }
 
-// Placeholder ConfirmTimePage
+// ✅ Ensure ConfirmTimePage exists and has the correct parameters
 struct ConfirmTimePage: View {
     var selectedDate: Date
-    
+    var selectedHour: Int
+    var selectedMinute: Int
+    var selectedPeriod: String
+
     var body: some View {
-        Text("Selected Date: \(selectedDate, formatter: dateFormatter)")
-            .font(.title)
-            .padding()
+        VStack {
+            Text("Confirmation")
+                .font(.title)
+                .padding()
+
+            Text("Selected Date:")
+                .font(.headline)
+            Text("\(formattedDate)")
+                .font(.title2)
+                .padding(.bottom)
+
+            Text("Selected Time:")
+                .font(.headline)
+            Text("\(selectedHour):\(String(format: "%02d", selectedMinute)) \(selectedPeriod)")
+                .font(.title2)
+
+            Spacer()
+        }
+        .padding()
     }
-    
-    private var dateFormatter: DateFormatter {
+
+    private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
-        return formatter
+        return formatter.string(from: selectedDate)
     }
 }
 
