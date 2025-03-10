@@ -3,7 +3,6 @@ import SwiftUI
 struct TimerArea: View {
     var body: some View {
         VStack {
-            // Header Tab
             Text("Select area for timer:")
                 .font(.title)
                 .fontWeight(.bold)
@@ -20,17 +19,28 @@ struct TimerArea: View {
             }
             
             Spacer()
+
+            // View Scheduled Cleanings Button
+            NavigationLink(destination: SavedSchedulePage()) {
+                Text("View Scheduled Cleanings")
+                    .frame(width: 250, height: 50)
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.bottom, 20)
         }
         .padding()
     }
 }
+
 
 // Reusable Button Component
 struct TimerNavigationButton: View {
     var title: String
     
     var body: some View {
-        NavigationLink(destination: SelectDayPage()) {
+        NavigationLink(destination: SelectDayPage(selectedArea: title)) {
             Text(title)
                 .frame(width: 200, height: 50)
                 .background(Color.blue)
@@ -40,12 +50,12 @@ struct TimerNavigationButton: View {
     }
 }
 
-// Preview
-// Preview
+
+
 struct TimerArea_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            TimerArea() // Updated to match the new struct name
+            TimerArea() 
         }
     }
 }

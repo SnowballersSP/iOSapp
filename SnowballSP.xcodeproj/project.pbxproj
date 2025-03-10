@@ -26,6 +26,7 @@
 		5B42E71F2D678A41003CA2A5 /* UsageScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E71E2D678A41003CA2A5 /* UsageScreen.swift */; };
 		5B42E7212D678A5A003CA2A5 /* MonthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E7202D678A5A003CA2A5 /* MonthScreen.swift */; };
 		5B42E7232D678A92003CA2A5 /* WeatherScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E7222D678A92003CA2A5 /* WeatherScreen.swift */; };
+		5B42E7292D7F52C2003CA2A5 /* SavedSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E7282D7F52C2003CA2A5 /* SavedSchedule.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		5B42E71E2D678A41003CA2A5 /* UsageScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageScreen.swift; sourceTree = "<group>"; };
 		5B42E7202D678A5A003CA2A5 /* MonthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthScreen.swift; sourceTree = "<group>"; };
 		5B42E7222D678A92003CA2A5 /* WeatherScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherScreen.swift; sourceTree = "<group>"; };
+		5B42E7282D7F52C2003CA2A5 /* SavedSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSchedule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				5B42E6752D524E12003CA2A5 /* ContentView.swift */,
 				5B42E69E2D524F3A003CA2A5 /* TimerPage.swift */,
 				5B42E71A2D543697003CA2A5 /* TimerArea.swift */,
+				5B42E7282D7F52C2003CA2A5 /* SavedSchedule.swift */,
 				5B42E71C2D543705003CA2A5 /* SelectDayPage.swift */,
 				5B42E6A02D524F54003CA2A5 /* StatisticsPage.swift */,
 				5B42E7202D678A5A003CA2A5 /* MonthScreen.swift */,
@@ -302,6 +305,7 @@
 				5B42E6AB2D526346003CA2A5 /* ScanRunningPage.swift in Sources */,
 				5B42E6762D524E12003CA2A5 /* ContentView.swift in Sources */,
 				5B42E7232D678A92003CA2A5 /* WeatherScreen.swift in Sources */,
+				5B42E7292D7F52C2003CA2A5 /* SavedSchedule.swift in Sources */,
 				5B42E6A92D526329003CA2A5 /* UseSaltPage.swift in Sources */,
 				5B42E69F2D524F3A003CA2A5 /* TimerPage.swift in Sources */,
 				5B42E71D2D543705003CA2A5 /* SelectDayPage.swift in Sources */,

@@ -1,14 +1,31 @@
 import SwiftUI
 
 struct SelectDayPage: View {
+    var selectedArea: String
+    var existingDateAndTime: String? = nil // Added optional parameter for editing mode
+    var editingIndex: Int? = nil           // Added optional parameter for tracking the editing index
+    
     @State private var selectedDate = Date()
     @State private var selectedHour = 12
     @State private var selectedMinute = 0
     @State private var selectedPeriod = "AM"
 
+    init(selectedArea: String, existingDateAndTime: String? = nil, editingIndex: Int? = nil) { // Updated initializer
+        self.selectedArea = selectedArea
+        self.existingDateAndTime = existingDateAndTime
+        self.editingIndex = editingIndex
+
+        if let dateAndTime = existingDateAndTime {
+            self._selectedDate = State(initialValue: parseDate(from: dateAndTime)) // Pre-fill date
+            let parsedTime = parseTime(from: dateAndTime)
+            self._selectedHour = State(initialValue: parsedTime.hour) // Pre-fill hour
+            self._selectedMinute = State(initialValue: parsedTime.minute) // Pre-fill minute
+            self._selectedPeriod = State(initialValue: parsedTime.period) // Pre-fill AM/PM
+        }
+    }
+
     var body: some View {
         VStack {
-            // Header Tab
             Text("Select Day")
                 .font(.title)
                 .fontWeight(.bold)
@@ -33,7 +50,6 @@ struct SelectDayPage: View {
                 }
             }
 
-            // Calendar Grid (Fixing the missing scope issue)
             CalendarView(selectedDate: $selectedDate)
 
             // Time Picker Section
@@ -43,7 +59,6 @@ struct SelectDayPage: View {
                     .padding(.top, 10)
 
                 HStack {
-                    // Hour Picker
                     Picker("Hour", selection: $selectedHour) {
                         ForEach(1...12, id: \.self) { hour in
                             Text("\(hour)").tag(hour)
@@ -54,7 +69,6 @@ struct SelectDayPage: View {
 
                     Text(":")
 
-                    // Minute Picker
                     Picker("Minute", selection: $selectedMinute) {
                         ForEach(0..<60, id: \.self) { minute in
                             Text(String(format: "%02d", minute)).tag(minute)
@@ -63,7 +77,6 @@ struct SelectDayPage: View {
                     .pickerStyle(WheelPickerStyle())
                     .frame(width: 80)
 
-                    // AM/PM Picker
                     Picker("AM/PM", selection: $selectedPeriod) {
                         Text("AM").tag("AM")
                         Text("PM").tag("PM")
@@ -71,17 +84,18 @@ struct SelectDayPage: View {
                     .pickerStyle(WheelPickerStyle())
                     .frame(width: 80)
                 }
-                .frame(height: 100) // Set height to ensure visibility
+                .frame(height: 100)
             }
 
             Spacer()
 
-            // Confirm Selection Button
             NavigationLink(destination: ConfirmTimePage(
+                selectedArea: selectedArea,
                 selectedDate: selectedDate,
                 selectedHour: selectedHour,
                 selectedMinute: selectedMinute,
-                selectedPeriod: selectedPeriod
+                selectedPeriod: selectedPeriod,
+                editingIndex: editingIndex // Pass editing index
             )) {
                 Text("Confirm Date & Time")
                     .frame(width: 250, height: 50)
@@ -94,29 +108,41 @@ struct SelectDayPage: View {
         .padding()
     }
 
-    // Computed property to format month & year
     private var monthYearString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM yyyy"
         return formatter.string(from: selectedDate)
     }
 
-    // Move to the previous month
     private func previousMonth() {
         if let newDate = Calendar.current.date(byAdding: .month, value: -1, to: selectedDate) {
             selectedDate = newDate
         }
     }
 
-    // Move to the next month
     private func nextMonth() {
         if let newDate = Calendar.current.date(byAdding: .month, value: 1, to: selectedDate) {
             selectedDate = newDate
         }
     }
+
+    // Function to parse a date from an existing schedule string
+    private func parseDate(from dateTimeString: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, yyyy @ h:mm a"
+        return formatter.date(from: dateTimeString) ?? Date() // Default to current date if parsing fails
+    }
+
+    // Function to parse time components from an existing schedule string
+    private func parseTime(from dateTimeString: String) -> (hour: Int, minute: Int, period: String) {
+        let components = dateTimeString.components(separatedBy: ["@", ":", " "]).map { $0.trimmingCharacters(in: .whitespaces) }
+        guard components.count >= 4, let hour = Int(components[1]), let minute = Int(components[2]) else {
+            return (12, 0, "AM") // Default to 12:00 AM if parsing fails
+        }
+        return (hour, minute, components[3])
+    }
 }
 
-// ✅ Adding CalendarView here to ensure it is in scope
 struct CalendarView: View {
     @Binding var selectedDate: Date
 
@@ -172,18 +198,27 @@ struct CalendarView: View {
     }
 }
 
-// ✅ Ensure ConfirmTimePage exists and has the correct parameters
 struct ConfirmTimePage: View {
+    var selectedArea: String
     var selectedDate: Date
     var selectedHour: Int
     var selectedMinute: Int
     var selectedPeriod: String
+    var editingIndex: Int? // for edit index
+
+    @State private var navigateToSavedSchedule = false
 
     var body: some View {
         VStack {
             Text("Confirmation")
                 .font(.title)
                 .padding()
+
+            Text("Selected Area:")
+                .font(.headline)
+            Text(selectedArea)
+                .font(.title2)
+                .padding(.bottom)
 
             Text("Selected Date:")
                 .font(.headline)
@@ -197,6 +232,22 @@ struct ConfirmTimePage: View {
                 .font(.title2)
 
             Spacer()
+
+            Button(action: saveScheduledCleaning) {
+                Text("Confirm & Save")
+                    .frame(width: 200, height: 50)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.top, 20)
+            
+            // Navigation trigger
+            NavigationLink(
+                destination: SavedSchedulePage(),
+                isActive: $navigateToSavedSchedule
+            ) { EmptyView() }
+
         }
         .padding()
     }
@@ -206,13 +257,32 @@ struct ConfirmTimePage: View {
         formatter.dateStyle = .long
         return formatter.string(from: selectedDate)
     }
+
+    private func saveScheduledCleaning() {
+        let newSchedule = "\(selectedArea): \(formattedDate) @ \(selectedHour):\(String(format: "%02d", selectedMinute)) \(selectedPeriod)"
+        
+        var savedSchedules = UserDefaults.standard.array(forKey: "ScheduledCleanings") as? [String] ?? []
+
+        if let index = editingIndex {
+            //  Editing existing schedule
+            savedSchedules[index] = newSchedule
+        } else {
+            // adding new schedule
+            savedSchedules.append(newSchedule)
+        }
+        
+        UserDefaults.standard.set(savedSchedules, forKey: "ScheduledCleanings")
+        
+        // Navigate after saving
+        navigateToSavedSchedule = true
+    }
 }
 
-// Preview
+
 struct SelectDayPage_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            SelectDayPage()
+            SelectDayPage(selectedArea: "Front Garage", existingDateAndTime: "March 5, 2025 @ 10:30 AM", editingIndex: 0) // Example preview for editing
         }
     }
 }
