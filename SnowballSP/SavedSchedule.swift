@@ -2,12 +2,17 @@ import SwiftUI
 
 struct SavedSchedulePage: View {
     @State private var scheduledCleanings: [String] = []
-    @State private var selectedEditingIndex: Int? = nil // Track selected index for navigation
+    @State private var selectedEditingIndex: Int? = nil
     @State private var showReturnHomeButton: Bool = true
+    
+    //  Track the current logged-in user
+    @State private var currentUser: String = UserDefaults.standard.string(forKey: "loggedInUser") ?? "Guest"
+    
     var body: some View {
         NavigationStack {
             VStack {
-                Text("Saved Schedulings")
+                // Show the current user's saved schedules
+                Text("\(currentUser)'s Saved Schedules")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding()
@@ -20,7 +25,7 @@ struct SavedSchedulePage: View {
                         ForEach(scheduledCleanings.indices, id: \.self) { index in
                             HStack {
                                 Text(scheduledCleanings[index])
-                                
+
                                 Spacer()
 
                                 // Edit Button
@@ -58,6 +63,7 @@ struct SavedSchedulePage: View {
                 }
 
                 Spacer()
+
                 if showReturnHomeButton {
                     NavigationLink(destination: HomePage()) {
                         Text("Return Home")
@@ -74,15 +80,22 @@ struct SavedSchedulePage: View {
         }
     }
 
-    // Load saved schedules from UserDefaults
+    // Load saved schedules specific to the current user
     private func loadScheduledCleanings() {
-        scheduledCleanings = UserDefaults.standard.array(forKey: "ScheduledCleanings") as? [String] ?? []
+        let key = "ScheduledCleanings_\(currentUser)"
+        scheduledCleanings = UserDefaults.standard.array(forKey: key) as? [String] ?? []
+    }
+
+    //  Save schedule changes specific to the current user
+    private func saveScheduledCleanings() {
+        let key = "ScheduledCleanings_\(currentUser)"
+        UserDefaults.standard.set(scheduledCleanings, forKey: key)
     }
 
     // Delete a schedule from the list
     private func deleteSchedule(at index: Int) {
         scheduledCleanings.remove(at: index)
-        UserDefaults.standard.set(scheduledCleanings, forKey: "ScheduledCleanings")
+        saveScheduledCleanings()
         showReturnHomeButton = true
     }
 

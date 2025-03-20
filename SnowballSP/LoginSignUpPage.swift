@@ -1,10 +1,3 @@
-//
-//  LoginSignUpPage.swift
-//  SnowballSP
-//
-//  Created by Brianna John on 3/19/25.
-//
-
 import SwiftUI
 
 struct LoginSignupPage: View {
@@ -74,12 +67,12 @@ struct LoginSignupPage: View {
         }
     }
 
-    // ✅ Handle Login & Signup
+    //  Handle Login & Signup
     private func handleAuth() {
         let defaults = UserDefaults.standard
         
         if isLoginMode {
-            // ✅ Login Logic
+            // Login Logic
             if let savedPassword = defaults.string(forKey: username.lowercased()) {
                 if savedPassword == password {
                     defaults.set(username, forKey: "loggedInUser")
@@ -93,7 +86,7 @@ struct LoginSignupPage: View {
                 showAlert = true
             }
         } else {
-            // ✅ Signup Logic
+            // Signup Logic
             if username.isEmpty || password.isEmpty || confirmPassword.isEmpty {
                 alertMessage = "All fields are required."
                 showAlert = true
@@ -119,7 +112,7 @@ struct LoginSignupPage: View {
         }
     }
 
-    // ✅ Check Auto-Login
+    //  Check Auto-Login
     private func autoLoginCheck() {
         let defaults = UserDefaults.standard
         if let loggedInUser = defaults.string(forKey: "loggedInUser") {
@@ -128,7 +121,7 @@ struct LoginSignupPage: View {
         }
     }
 
-    // ✅ Navigate to HomePage
+    //  Navigate to HomePage
     private func navigateToHome() {
         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
            let window = windowScene.windows.first {
@@ -141,7 +134,7 @@ struct LoginSignupPage: View {
 
 }
 
-// ✅ Preview
+//  Preview
 struct LoginSignupPage_Previews: PreviewProvider {
     static var previews: some View {
         LoginSignupPage()

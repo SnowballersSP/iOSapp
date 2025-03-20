@@ -259,23 +259,28 @@ struct ConfirmTimePage: View {
     }
 
     private func saveScheduledCleaning() {
+        let defaults = UserDefaults.standard
+        let currentUser = defaults.string(forKey: "loggedInUser") ?? "Guest"
+        let userKey = "ScheduledCleanings_\(currentUser)"
+        
         let newSchedule = "\(selectedArea): \(formattedDate) @ \(selectedHour):\(String(format: "%02d", selectedMinute)) \(selectedPeriod)"
         
-        var savedSchedules = UserDefaults.standard.array(forKey: "ScheduledCleanings") as? [String] ?? []
+        var savedSchedules = defaults.array(forKey: userKey) as? [String] ?? []
 
         if let index = editingIndex {
-            //  Editing existing schedule
+            // Editing existing schedule
             savedSchedules[index] = newSchedule
         } else {
-            // adding new schedule
+            // Adding new schedule
             savedSchedules.append(newSchedule)
         }
         
-        UserDefaults.standard.set(savedSchedules, forKey: "ScheduledCleanings")
+        defaults.set(savedSchedules, forKey: userKey)
         
         // Navigate after saving
         navigateToSavedSchedule = true
     }
+
 }
 
 
