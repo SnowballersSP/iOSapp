@@ -2,28 +2,60 @@ import SwiftUI
 
 struct HomePage: View {
     var body: some View {
-        NavigationStack { // Ensure only HomePage has NavigationStack
-            VStack(spacing: 20) {
-                Text("Home Page")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding(.top, 20)
+        NavigationStack {
+            ZStack {
+                // Main content
+                VStack(spacing: 20) {
+                    Text("SnowBaller")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .padding(.top, 20)
 
-                VStack(spacing: 30) {
-                    NavigationRow(imageName: "scan_area", title: "Scan Area", destination: ScanAreaPage())
-                    NavigationRow(imageName: "deploy", title: "Deploy", destination: DeployPage())
-                    NavigationRow(imageName: "timer", title: "Timer", destination: TimerArea())
-                    NavigationRow(imageName: "statistics", title: "Statistics", destination: StatisticsPage())
+                    VStack(spacing: 30) {
+                        NavigationRow(imageName: "scan_area", title: "Scan Area", destination: ScanAreaPage())
+                        NavigationRow(imageName: "deploy", title: "Deploy", destination: DeployPage())
+                        NavigationRow(imageName: "timer", title: "Timer", destination: TimerArea())
+                        NavigationRow(imageName: "statistics", title: "Statistics", destination: StatisticsPage())
+                    }
+
+                    Spacer()
                 }
+                .padding()
 
-                Spacer()
+                // Logout Button
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: logout) {
+                            Image(systemName: "figure.walk.departure") //  icon
+                                .resizable()
+                                .frame(width: 25, height: 25)
+                                .foregroundColor(.black)
+                                .shadow(radius: 5)
+                        }
+                        .padding()
+                    }
+                }
             }
-            .padding()
+        }
+    }
+
+    // Logout function
+    private func logout() {
+        UserDefaults.standard.removeObject(forKey: "loggedInUser")
+        
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            withAnimation {
+                window.rootViewController = UIHostingController(rootView: LoginSignupPage())
+                window.makeKeyAndVisible()
+            }
         }
     }
 }
 
-// Reusable component for navigation
+// Reusable Navigation Row
 struct NavigationRow<Destination: View>: View {
     var imageName: String
     var title: String

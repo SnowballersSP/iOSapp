@@ -11,7 +11,7 @@ import SwiftUI
 struct SnowballSPApp: App {
     var body: some Scene {
         WindowGroup {
-            HomePage()
+            LoginSignupPage()
         }
     }
 }

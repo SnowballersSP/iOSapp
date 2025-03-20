@@ -27,6 +27,7 @@
 		5B42E7212D678A5A003CA2A5 /* MonthScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E7202D678A5A003CA2A5 /* MonthScreen.swift */; };
 		5B42E7232D678A92003CA2A5 /* WeatherScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E7222D678A92003CA2A5 /* WeatherScreen.swift */; };
 		5B42E7292D7F52C2003CA2A5 /* SavedSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E7282D7F52C2003CA2A5 /* SavedSchedule.swift */; };
+		5B42E72F2D8B9663003CA2A5 /* LoginSignUpPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B42E72E2D8B9663003CA2A5 /* LoginSignUpPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		5B42E7202D678A5A003CA2A5 /* MonthScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthScreen.swift; sourceTree = "<group>"; };
 		5B42E7222D678A92003CA2A5 /* WeatherScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherScreen.swift; sourceTree = "<group>"; };
 		5B42E7282D7F52C2003CA2A5 /* SavedSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedSchedule.swift; sourceTree = "<group>"; };
+		5B42E72E2D8B9663003CA2A5 /* LoginSignUpPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSignUpPage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +124,7 @@
 			isa = PBXGroup;
 			children = (
 				5B42E6732D524E12003CA2A5 /* SnowballSPApp.swift */,
+				5B42E72E2D8B9663003CA2A5 /* LoginSignUpPage.swift */,
 				5B42E6752D524E12003CA2A5 /* ContentView.swift */,
 				5B42E69E2D524F3A003CA2A5 /* TimerPage.swift */,
 				5B42E71A2D543697003CA2A5 /* TimerArea.swift */,
@@ -310,6 +313,7 @@
 				5B42E69F2D524F3A003CA2A5 /* TimerPage.swift in Sources */,
 				5B42E71D2D543705003CA2A5 /* SelectDayPage.swift in Sources */,
 				5B42E6A32D524F65003CA2A5 /* DeployPage.swift in Sources */,
+				5B42E72F2D8B9663003CA2A5 /* LoginSignUpPage.swift in Sources */,
 				5B42E6742D524E12003CA2A5 /* SnowballSPApp.swift in Sources */,
 				5B42E6A72D5254D7003CA2A5 /* ScanInProgressPage.swift in Sources */,
 				5B42E6A12D524F54003CA2A5 /* StatisticsPage.swift in Sources */,

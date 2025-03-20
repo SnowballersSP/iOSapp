@@ -10,7 +10,7 @@ struct TimerArea: View {
 
             Spacer()
 
-            // Buttons for Areas
+            // Buttons
             VStack(spacing: 20) {
                 TimerNavigationButton(title: "Front Garage")
                 TimerNavigationButton(title: "Front Patio")
