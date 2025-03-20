@@ -260,22 +260,30 @@ struct ConfirmTimePage: View {
 
     private func saveScheduledCleaning() {
         let newSchedule = "\(selectedArea): \(formattedDate) @ \(selectedHour):\(String(format: "%02d", selectedMinute)) \(selectedPeriod)"
-        
-        var savedSchedules = UserDefaults.standard.array(forKey: "ScheduledCleanings") as? [String] ?? []
+
+        // ✅ Fetch current user's schedules
+        let loggedInUser = UserDefaults.standard.string(forKey: "loggedInUser") ?? ""
+        var allSchedules = UserDefaults.standard.dictionary(forKey: "ScheduledCleanings") as? [String: [String]] ?? [:]
+        var userSchedules = allSchedules[loggedInUser] ?? []
 
         if let index = editingIndex {
-            //  Editing existing schedule
-            savedSchedules[index] = newSchedule
+            userSchedules[index] = newSchedule
         } else {
-            // adding new schedule
-            savedSchedules.append(newSchedule)
+            userSchedules.append(newSchedule)
         }
-        
-        UserDefaults.standard.set(savedSchedules, forKey: "ScheduledCleanings")
-        
-        // Navigate after saving
-        navigateToSavedSchedule = true
+
+        // ✅ Save back to that specific user
+        allSchedules[loggedInUser] = userSchedules
+        UserDefaults.standard.set(allSchedules, forKey: "ScheduledCleanings")
+
+        // ✅ Redirect to SavedSchedulePage
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = UIHostingController(rootView: SavedSchedulePage())
+            window.makeKeyAndVisible()
+        }
     }
+
 }
 
 

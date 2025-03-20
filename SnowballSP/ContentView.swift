@@ -38,6 +38,7 @@ struct HomePage: View {
                     }
                 }
             }
+            .navigationBarBackButtonHidden(true) 
         }
     }
 

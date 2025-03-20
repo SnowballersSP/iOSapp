@@ -1,94 +1,113 @@
 import SwiftUI
 
 struct SavedSchedulePage: View {
-    @State private var scheduledCleanings: [String] = []
-    @State private var selectedEditingIndex: Int? = nil // Track selected index for navigation
+    @State private var schedules: [String] = []
+    private let loggedInUser = UserDefaults.standard.string(forKey: "loggedInUser") ?? ""
 
     var body: some View {
-        NavigationStack {
-            VStack {
-                Text("Saved Schedulings")
-                    .font(.title)
-                    .fontWeight(.bold)
+        VStack {
+            Text("Your Saved Schedules")
+                .font(.title)
+                .padding()
+
+            if schedules.isEmpty {
+                Text("No saved schedules yet!")
+                    .font(.headline)
+                    .foregroundColor(.gray)
                     .padding()
-
-                if scheduledCleanings.isEmpty {
-                    Text("No scheduled cleanings yet.")
-                        .foregroundColor(.gray)
-                } else {
-                    List {
-                        ForEach(scheduledCleanings.indices, id: \.self) { index in
-                            HStack {
-                                Text(scheduledCleanings[index])
-                                
-                                Spacer()
-
-                                // Edit Button
-                                Button(action: {
-                                    editSchedule(at: index)
-                                }) {
-                                    Image(systemName: "pencil")
-                                        .foregroundColor(.blue)
-                                }
-                                .buttonStyle(BorderlessButtonStyle())
-
-                                // Delete Button
-                                Button(action: {
+            } else {
+                List {
+                    ForEach(schedules.indices, id: \.self) { index in
+                        Text(schedules[index])
+                            .swipeActions {
+                                Button("Delete", role: .destructive) {
                                     deleteSchedule(at: index)
-                                }) {
-                                    Image(systemName: "trash")
-                                        .foregroundColor(.red)
                                 }
-                                .buttonStyle(BorderlessButtonStyle())
+                                Button("Edit") {
+                                    editSchedule(at: index)
+                                }
                             }
-                            .background(
-                                NavigationLink(
-                                    destination: SelectDayPage(
-                                        selectedArea: extractArea(from: scheduledCleanings[index]),
-                                        existingDateAndTime: extractDateAndTime(from: scheduledCleanings[index]),
-                                        editingIndex: index
-                                    ),
-                                    tag: index,
-                                    selection: $selectedEditingIndex
-                                ) { EmptyView() }
-                                .opacity(0) // Invisible NavigationLink
-                            )
-                        }
                     }
                 }
-
-                Spacer()
             }
-            .onAppear(perform: loadScheduledCleanings)
-            .padding()
+
+            Spacer()
+
+            // Return to home button
+            NavigationLink(destination: HomePage()) {
+                Text("Return Home")
+                    .frame(width: 200, height: 50)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.bottom, 20) // Add some padding to ensure button is not too close to the bottom
+        }
+        .onAppear {
+            loadUserSchedules()
         }
     }
 
-    // Load saved schedules from UserDefaults
-    private func loadScheduledCleanings() {
-        scheduledCleanings = UserDefaults.standard.array(forKey: "ScheduledCleanings") as? [String] ?? []
+    // Load the logged-in user's saved schedules
+    private func loadUserSchedules() {
+        if let allSchedules = UserDefaults.standard.dictionary(forKey: "ScheduledCleanings") as? [String: [String]] {
+            schedules = allSchedules[loggedInUser] ?? []
+        }
     }
 
-    // Delete a schedule from the list
+    // Delete a schedule from the user’s data
     private func deleteSchedule(at index: Int) {
-        scheduledCleanings.remove(at: index)
-        UserDefaults.standard.set(scheduledCleanings, forKey: "ScheduledCleanings")
+        schedules.remove(at: index)
+        saveUserSchedules()
     }
 
-    // Edit a schedule
+    // Edit functionality — navigates back to ConfirmTimePage with prefilled data
     private func editSchedule(at index: Int) {
-        selectedEditingIndex = index // Triggers navigation
+        let scheduleParts = schedules[index].components(separatedBy: ": ")
+        let area = scheduleParts[0]
+        let dateTime = scheduleParts[1].components(separatedBy: " @ ")
+        let date = dateTime[0]
+        let timeParts = dateTime[1].components(separatedBy: " ")
+
+        // Extracting time details
+        let time = timeParts[0].components(separatedBy: ":")
+        let hour = Int(time[0]) ?? 0
+        let minute = Int(time[1]) ?? 0
+        let period = timeParts[1]
+
+        // Navigate to ConfirmTimePage with editingIndex set
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+            window.rootViewController = UIHostingController(rootView: ConfirmTimePage(
+                selectedArea: area,
+                selectedDate: parseDate(from: date),
+                selectedHour: hour,
+                selectedMinute: minute,
+                selectedPeriod: period,
+                editingIndex: index
+            ))
+            window.makeKeyAndVisible()
+        }
     }
 
-    // Extract area from saved string format
-    private func extractArea(from schedule: String) -> String {
-        let components = schedule.components(separatedBy: ": ")
-        return components.first ?? ""
+    // Save schedules specifically for the logged-in user
+    private func saveUserSchedules() {
+        var allSchedules = UserDefaults.standard.dictionary(forKey: "ScheduledCleanings") as? [String: [String]] ?? [:]
+        allSchedules[loggedInUser] = schedules
+        UserDefaults.standard.set(allSchedules, forKey: "ScheduledCleanings")
     }
 
-    // Extract date and time from saved string format
-    private func extractDateAndTime(from schedule: String) -> String {
-        let components = schedule.components(separatedBy: ": ")
-        return components.count > 1 ? components[1] : ""
+    // Parse date string (e.g., "March 12, 2025") back into Date
+    private func parseDate(from dateString: String) -> Date {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .long
+        return formatter.date(from: dateString) ?? Date()
+    }
+}
+
+// Preview
+struct SavedSchedulePage_Previews: PreviewProvider {
+    static var previews: some View {
+        SavedSchedulePage()
     }
 }
