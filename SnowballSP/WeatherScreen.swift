@@ -1,8 +1,3 @@
-////  WeatherScreen.swift
-////  SnowballSP
-////
-////  Created by Brianna John on 2/20/25.
-///
 import SwiftUI
 
 struct WeatherScreen: View {
