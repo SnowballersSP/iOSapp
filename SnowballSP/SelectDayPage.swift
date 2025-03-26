@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct SelectDayPage: View {
     var selectedArea: String
@@ -277,9 +278,60 @@ struct ConfirmTimePage: View {
         
         defaults.set(savedSchedules, forKey: userKey)
         
+        // Schedule the notification
+        scheduleNotification(for: selectedArea, on: selectedDate, hour: selectedHour, minute: selectedMinute, period: selectedPeriod)
+        let testContent = UNMutableNotificationContent()
+        testContent.title = "SnowBall Schedule"
+        testContent.body = "Your schedule was saved successfully!"
+        testContent.sound = .default
+
+        let testTrigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+        let testRequest = UNNotificationRequest(identifier: UUID().uuidString, content: testContent, trigger: testTrigger)
+
+        UNUserNotificationCenter.current().add(testRequest)
+
         // Navigate after saving
         navigateToSavedSchedule = true
     }
+    private func scheduleNotification(for area: String, on date: Date, hour: Int, minute: Int, period: String) {
+        let content = UNMutableNotificationContent()
+        content.title = "Upcoming Cleaning"
+        content.body = "Your cleaning for \(area) starts soon!"
+        content.sound = .default
+
+        // Adjust hour for AM/PM format
+        var adjustedHour = hour
+        if period == "PM" && hour != 12 {
+            adjustedHour += 12
+        } else if period == "AM" && hour == 12 {
+            adjustedHour = 0
+        }
+
+        // Combine date with time
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.current
+        var dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        dateComponents.hour = adjustedHour
+        dateComponents.minute = minute
+
+        // Create a Date object from components
+        if let cleaningDate = calendar.date(from: dateComponents) {
+            let notificationDate = cleaningDate.addingTimeInterval(-5 * 60) // 5 minutes before
+
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: notificationDate.timeIntervalSinceNow, repeats: false)
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Failed to schedule notification: \(error.localizedDescription)")
+                } else {
+                    print("Notification scheduled for \(area) 5 minutes before: \(notificationDate)")
+                }
+            }
+        }
+    }
+
 
 }
 
