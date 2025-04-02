@@ -34,7 +34,7 @@ struct WeatherScreen: View {
     }
 
     func fetchWeatherData() {
-        let apiKey = "0b4c56445d9f431d944212514251003" 
+        let apiKey = "b9a7d49920a14256b2314145250204"
         let location = "Washington,DC"
         let urlString = "https://api.weatherapi.com/v1/forecast.json?key=\(apiKey)&q=\(location)&days=7&aqi=no&alerts=no"
 
@@ -43,7 +43,16 @@ struct WeatherScreen: View {
         URLSession.shared.dataTask(with: url) { data, _, error in
             if let data = data {
                 do {
+                    // Print raw API response
+                    if let rawResponse = String(data: data, encoding: .utf8) {
+                        print("Raw API Response: \(rawResponse)")
+                    }
+
                     let decodedData = try JSONDecoder().decode(WeatherResponse.self, from: data)
+                    
+                    // Debugging: Print count of received forecast days
+                    print("Forecast days received: \(decodedData.forecast.forecastday.count)")
+
                     DispatchQueue.main.async {
                         self.forecast = decodedData.forecast.forecastday.map { day in
                             let temp = day.day.avgtemp_f
@@ -54,13 +63,19 @@ struct WeatherScreen: View {
                                 symbol: getWeatherSymbol(for: day.day.condition.text)
                             )
                         }
+
+                        // Debugging: Print final mapped forecast data
+                        print("Mapped forecast data: \(self.forecast)")
                     }
                 } catch {
                     print("Error decoding weather data: \(error)")
                 }
+            } else if let error = error {
+                print("Network request failed: \(error)")
             }
         }.resume()
     }
+
 
     func temperatureColor(_ temperature: Double) -> Color {
         switch temperature {

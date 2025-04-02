@@ -2,17 +2,19 @@ import SwiftUI
 
 struct ScanAreaPage: View {
     var body: some View {
-        VStack {
-            // Space for Snowball Image
-            Image("snowball_placeholder") // Replace with actual image asset
+        VStack(spacing: 20) { 
+            Image("turtlebot")
                 .resizable()
                 .scaledToFit()
-                .frame(height: 200)
+                .frame(maxWidth: .infinity, maxHeight: 250)
                 .padding()
 
-            Spacer()
+            // Instructions Text
+            Text("Instructions: Please place the SnowBaller in the corner of your desired area")
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 20)
 
-            // Scan New Area Button
+            // Scan New Area Button - Positioned Below Instructions
             NavigationLink(destination: ScanInProgressPage()) {
                 Text("Scan New Area")
                     .frame(width: 200, height: 50)

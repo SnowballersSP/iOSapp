@@ -162,14 +162,19 @@ struct CalendarView: View {
             let days = generateCalendarDays()
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7)) {
                 ForEach(days, id: \.self) { date in
-                    Button(action: {
-                        selectedDate = date
-                    }) {
-                        Text("\(Calendar.current.component(.day, from: date))")
+                    if let validDate = date {  // Unwrap optional date safely
+                        Button(action: {
+                            selectedDate = validDate
+                        }) {
+                            Text("\(Calendar.current.component(.day, from: validDate))")
+                                .frame(width: 40, height: 40)
+                                .background(isSameDay(validDate, selectedDate) ? Color.blue : Color.clear)
+                                .foregroundColor(isSameDay(validDate, selectedDate) ? .white : .black)
+                                .cornerRadius(20)
+                        }
+                    } else {
+                        Text("") // Placeholder for empty days
                             .frame(width: 40, height: 40)
-                            .background(isSameDay(date, selectedDate) ? Color.blue : Color.clear)
-                            .foregroundColor(isSameDay(date, selectedDate) ? .white : .black)
-                            .cornerRadius(20)
                     }
                 }
             }
@@ -177,27 +182,39 @@ struct CalendarView: View {
         .padding()
     }
 
-    private func generateCalendarDays() -> [Date] {
-        var dates: [Date] = []
+    private func generateCalendarDays() -> [Date?] {
+        var dates: [Date?] = []
         let calendar = Calendar.current
         let currentMonth = calendar.component(.month, from: selectedDate)
         let currentYear = calendar.component(.year, from: selectedDate)
+        
+        // Get the first day of the month
+        let firstDayOfMonth = calendar.date(from: DateComponents(year: currentYear, month: currentMonth, day: 1))!
+        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth) // 1 = Sunday, 2 = Monday, etc.
 
-        if let dayRange = calendar.range(of: .day, in: .month, for: selectedDate) {
-            for day in dayRange {
-                if let date = calendar.date(from: DateComponents(year: currentYear, month: currentMonth, day: day)) {
-                    dates.append(date)
-                }
+        // Number of days in the current month
+        let range = calendar.range(of: .day, in: .month, for: selectedDate)!
+
+        // Add empty slots for padding before the first day of the month
+        let paddingDays = firstWeekday - 1  // Adjusting to make Sunday index 0
+        for _ in 1...paddingDays {
+            dates.append(nil) // Placeholder for empty slots
+        }
+
+        // Add actual days of the month
+        for day in range {
+            if let date = calendar.date(from: DateComponents(year: currentYear, month: currentMonth, day: day)) {
+                dates.append(date)
             }
         }
         return dates
     }
 
     private func isSameDay(_ date1: Date, _ date2: Date) -> Bool {
-        let calendar = Calendar.current
-        return calendar.isDate(date1, inSameDayAs: date2)
+        return Calendar.current.isDate(date1, inSameDayAs: date2)
     }
 }
+
 
 struct ConfirmTimePage: View {
     var selectedArea: String
@@ -296,7 +313,7 @@ struct ConfirmTimePage: View {
     private func scheduleNotification(for area: String, on date: Date, hour: Int, minute: Int, period: String) {
         let content = UNMutableNotificationContent()
         content.title = "Upcoming Cleaning"
-        content.body = "Your cleaning for \(area) starts soon!"
+        content.body = "Your cleaning for \(area) starts in 5 minutes!"
         content.sound = .default
 
         // Adjust hour for AM/PM format
