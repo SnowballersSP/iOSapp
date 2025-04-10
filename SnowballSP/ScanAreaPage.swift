@@ -10,7 +10,7 @@ struct ScanAreaPage: View {
                 .padding()
 
             // Instructions Text
-            Text("Instructions: Please place the SnowBaller in the corner of your desired area")
+            Text("Instructions: Please place the SnowBall in the corner of your desired area")
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 20)
 

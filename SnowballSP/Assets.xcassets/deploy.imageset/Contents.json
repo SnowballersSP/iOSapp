@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "IMG_6718.PNG",
+      "filename" : "vbluestart.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
@@ -11,19 +11,22 @@
     },
     {
       "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "idiom" : "universal",
       "scale" : "3x"
     },
     {
       "idiom" : "universal",
-      "scale" : "3x"
+      "scale" : "2x",
+      "unassigned" : true
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x",
+      "unassigned" : true
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x",
+      "unassigned" : true
     }
   ],
   "info" : {

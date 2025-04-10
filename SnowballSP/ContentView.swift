@@ -6,7 +6,7 @@ struct HomePage: View {
             ZStack {
                 // Main content
                 VStack(spacing: 20) {
-                    Text("SnowBaller")
+                    Text("SnowBall")
                         .font(.largeTitle)
                         .fontWeight(.bold)
                         .padding(.top, 20)
@@ -15,7 +15,7 @@ struct HomePage: View {
                         NavigationRow(imageName: "scan_area", title: "Scan Area", destination: ScanAreaPage())
                         NavigationRow(imageName: "deploy", title: "Deploy", destination: DeployPage())
                         NavigationRow(imageName: "timer", title: "Timer", destination: TimerArea())
-                        NavigationRow(imageName: "statistics", title: "Statistics", destination: StatisticsPage())
+                        NavigationRow(imageName: "statistics", title: "Weather", destination: WeatherScreen())
                     }
 
                     Spacer()

@@ -3,7 +3,7 @@ import SwiftUI
 struct UseSaltPage: View {
     var body: some View {
         VStack {
-            Text("Would you like to use the salt dispense?")
+            Text("Would you like to use the salt dispenser?")
                 .font(.title)
                 .padding()
 

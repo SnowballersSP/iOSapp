@@ -11,7 +11,7 @@ struct ScanRunningPage: View {
 
     var body: some View {
         VStack {
-            Text("Cleaning Running...")
+            Text("SnowBall Running...")
                 .font(.largeTitle)
                 .padding()
 

@@ -13,10 +13,15 @@ struct LoginSignupPage: View {
     var body: some View {
         NavigationStack {
             VStack {
+                Image("logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+                    .padding(.top, 5)
                 Text(isLoginMode ? "Login" : "Sign Up")
                     .font(.largeTitle)
                     .bold()
-                    .padding(.top, 50)
+                    .padding(.top, 1)
 
                 Picker(selection: $isLoginMode, label: Text("Mode")) {
                     Text("Login").tag(true)
@@ -24,7 +29,7 @@ struct LoginSignupPage: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding(.horizontal, 40)
-                .padding(.top, 20)
+                .padding(.top, 5)
 
                 TextField("Username", text: $username)
                     .autocapitalization(.none)

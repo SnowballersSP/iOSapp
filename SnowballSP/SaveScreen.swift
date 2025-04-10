@@ -7,7 +7,7 @@ struct SaveScreen: View {
 
     var body: some View {
         VStack(spacing: 30) {
-            Text("Scan Complete ✅")
+            Text("SnowBall Scan Complete ✅")
                 .font(.largeTitle)
                 .padding(.top, 40)
 
@@ -40,6 +40,7 @@ struct SaveScreen: View {
                 Text("✅ '\(areaName)' has been saved!")
                     .foregroundColor(.green)
                     .font(.subheadline)
+                    .multilineTextAlignment(.center)
                     .padding(.top, 10)
             }
 
