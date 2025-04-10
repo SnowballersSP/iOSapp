@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct TimerArea: View {
+    @State private var customAreas: [String] = []
+
     var body: some View {
         VStack {
             Text("Select area for timer:")
@@ -10,17 +12,15 @@ struct TimerArea: View {
 
             Spacer()
 
-            // Buttons
             VStack(spacing: 20) {
-                TimerNavigationButton(title: "Front Garage")
-                TimerNavigationButton(title: "Front Patio")
-                TimerNavigationButton(title: "Back Patio")
-                TimerNavigationButton(title: "Sidewalk")
+                ForEach(customAreas, id: \.self) { area in
+                    TimerNavigationButton(title: area)
+                }
+                
             }
-            
+
             Spacer()
 
-            // View Scheduled Cleanings Button
             NavigationLink(destination: SavedSchedulePage()) {
                 Text("View Scheduled Cleanings")
                     .frame(width: 250, height: 50)
@@ -31,6 +31,14 @@ struct TimerArea: View {
             .padding(.bottom, 20)
         }
         .padding()
+        .onAppear {
+            //customAreas = UserDefaults.standard.stringArray(forKey: "customAreas") ?? []
+            let defaults = UserDefaults.standard
+            if let currentUser = defaults.string(forKey: "loggedInUser") {
+                customAreas = defaults.stringArray(forKey: "\(currentUser)_customAreas") ?? []
+            }
+
+        }
     }
 }
 

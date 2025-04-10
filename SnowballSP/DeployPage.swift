@@ -1,29 +1,22 @@
 import SwiftUI
 
 struct DeployPage: View {
+    @State private var customAreas: [String] = []
+
     var body: some View {
         NavigationView {
             VStack {
-                // Tab Title
                 Text("Choose Area to Scan")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding()
 
-                // Scrollable List of Buttons
                 ScrollView {
                     VStack(spacing: 15) {
-                        NavigationLink(destination: UseSaltPage()) {
-                            DeployButton(title: "Front Garage")
-                        }
-                        NavigationLink(destination: UseSaltPage()) {
-                            DeployButton(title: "Front Patio")
-                        }
-                        NavigationLink(destination: UseSaltPage()) {
-                            DeployButton(title: "Back Patio")
-                        }
-                        NavigationLink(destination: UseSaltPage()) {
-                            DeployButton(title: "Sidewalk")
+                        ForEach(customAreas, id: \.self) { area in
+                            NavigationLink(destination: UseSaltPage()) {
+                                DeployButton(title: area)
+                            }
                         }
                     }
                     .padding()
@@ -31,9 +24,18 @@ struct DeployPage: View {
 
                 Spacer()
             }
+            .onAppear {
+                //customAreas = UserDefaults.standard.stringArray(forKey: "customAreas") ?? []
+                let defaults = UserDefaults.standard
+                if let currentUser = defaults.string(forKey: "loggedInUser") {
+                    customAreas = defaults.stringArray(forKey: "\(currentUser)_customAreas") ?? []
+                }
+
+            }
         }
     }
 }
+
 
 // Custom Button Component
 struct DeployButton: View {
