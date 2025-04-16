@@ -11,13 +11,9 @@ struct CongratsScreen: View {
 
             Spacer()
 
-            // Add a celebratory animation or image
-            Image(systemName: "sparkles")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 150, height: 150)
-                .foregroundColor(.yellow)
-                .padding()
+            LottieView(filename: "congrats")
+                            .frame(width: 500, height: 500)
+                            .padding()
 
             Spacer()
             NavigationLink(destination: HomePage()) {

@@ -7,7 +7,7 @@ struct SaveScreen: View {
 
     var body: some View {
         VStack(spacing: 30) {
-            Text("SnowBall Scan Complete ✅")
+            Text("Scan Complete ✅")
                 .font(.largeTitle)
                 .padding(.top, 40)
 

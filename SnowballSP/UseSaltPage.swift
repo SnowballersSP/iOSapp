@@ -12,7 +12,7 @@ struct UseSaltPage: View {
                     UseSaltButton(title: "Yes")
                 }
                 NavigationLink(destination: ScanRunningPage()) {
-                    UseSaltButton(title: "No")
+                    NotUseSaltButton(title: "No")
                 }
             }
             .padding()
@@ -34,6 +34,18 @@ struct UseSaltButton: View {
             .cornerRadius(10)
     }
 }
+struct NotUseSaltButton: View {
+    var title: String
+
+    var body: some View {
+        Text(title)
+            .frame(width: 100, height: 50)
+            .background(Color.red)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+    }
+}
+
 
 // Preview
 struct UseSaltPage_Previews: PreviewProvider {

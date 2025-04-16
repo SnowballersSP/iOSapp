@@ -2,34 +2,49 @@ import SwiftUI
 
 struct WeatherScreen: View {
     @State private var forecast: [WeatherDay] = []
-    
+
     var body: some View {
-        VStack {
-            Text("Weather Forecast")
-                .font(.title)
-                .padding()
-            
-            List(forecast) { day in
-                HStack {
-                    Text(day.symbol) // Weather symbol
-                    Text("\(day.day): \(day.description) \(Int(day.temperature))°F")
-                        .foregroundColor(temperatureColor(day.temperature))
+        NavigationView {
+            ZStack {
+                LinearGradient(gradient: Gradient(colors: [Color.blue.opacity(0.4), Color.white]),
+                               startPoint: .topLeading,
+                               endPoint: .bottomTrailing)
+                    .ignoresSafeArea()
+
+                VStack(spacing: 20) {
+                    Text("7-Day Forecast")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
+                        .padding(.top)
+
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(forecast) { day in
+                                WeatherCard(day: day)
+                                    .padding(.horizontal)
+                            }
+                        }
+                    }
+
+                    Spacer()
+
+                    NavigationLink(destination: TimerArea()) {
+                        Text("Set Scheduled Clean")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                            .padding(.horizontal)
+                    }
+                    .padding(.bottom)
                 }
             }
             .onAppear {
                 fetchWeatherData()
             }
-
-            Spacer()
-
-            NavigationLink(destination: TimerArea()) {
-                Text("Set Scheduled Clean")
-                    .frame(width: 200, height: 50)
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            .padding()
         }
     }
 
@@ -43,16 +58,7 @@ struct WeatherScreen: View {
         URLSession.shared.dataTask(with: url) { data, _, error in
             if let data = data {
                 do {
-                    // Print raw API response
-                    if let rawResponse = String(data: data, encoding: .utf8) {
-                        print("Raw API Response: \(rawResponse)")
-                    }
-
                     let decodedData = try JSONDecoder().decode(WeatherResponse.self, from: data)
-                    
-                    // Debugging: Print count of received forecast days
-                    print("Forecast days received: \(decodedData.forecast.forecastday.count)")
-
                     DispatchQueue.main.async {
                         self.forecast = decodedData.forecast.forecastday.map { day in
                             let temp = day.day.avgtemp_f
@@ -63,48 +69,34 @@ struct WeatherScreen: View {
                                 symbol: getWeatherSymbol(for: day.day.condition.text)
                             )
                         }
-
-                        // Debugging: Print final mapped forecast data
-                        print("Mapped forecast data: \(self.forecast)")
                     }
                 } catch {
-                    print("Error decoding weather data: \(error)")
+                    print("❌ Decoding error: \(error)")
                 }
             } else if let error = error {
-                print("Network request failed: \(error)")
+                print("❌ Network error: \(error)")
             }
         }.resume()
     }
 
-
     func temperatureColor(_ temperature: Double) -> Color {
         switch temperature {
-        case ..<40:
-            return .blue
-        case 40..<60:
-            return .green
-        case 60..<80:
-            return .yellow
-        default:
-            return .red
+        case ..<40: return .blue
+        case 40..<60: return .green
+        case 60..<80: return .yellow
+        default: return .red
         }
     }
 
     func getWeatherSymbol(for description: String) -> String {
-        let lowercased = description.lowercased()
-        if lowercased.contains("cloud") {
-            return "☁️"
-        } else if lowercased.contains("rain") {
-            return "🌧"
-        } else if lowercased.contains("snow") {
-            return "❄️"
-        } else if lowercased.contains("sun") {
-            return "☀️"
-        } else {
-            return "🌤"
-        }
+        let lower = description.lowercased()
+        if lower.contains("cloud") { return "☁️" }
+        if lower.contains("rain")  { return "🌧" }
+        if lower.contains("snow")  { return "❄️" }
+        if lower.contains("sun")   { return "☀️" }
+        return "🌤"
     }
-    
+
     func formatDate(_ dateString: String) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -114,6 +106,56 @@ struct WeatherScreen: View {
         }
         return dateString
     }
+}
+
+struct WeatherCard: View {
+    let day: WeatherDay
+
+    var body: some View {
+        HStack(spacing: 16) {
+            Text(day.symbol)
+                .font(.largeTitle)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(day.day)
+                    .font(.headline)
+                Text(day.description)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+
+            Spacer()
+
+            Text("\(Int(day.temperature))°F")
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundColor(temperatureColor(day.temperature))
+        }
+        .padding()
+        .background(BlurView(style: .systemMaterial))
+        .cornerRadius(16)
+        .shadow(radius: 5)
+    }
+
+    func temperatureColor(_ temperature: Double) -> Color {
+        switch temperature {
+        case ..<40: return .blue
+        case 40..<60: return .green
+        case 60..<80: return .yellow
+        default: return .red
+        }
+    }
+}
+
+// Blur background effect
+struct BlurView: UIViewRepresentable {
+    var style: UIBlurEffect.Style
+
+    func makeUIView(context: Context) -> UIVisualEffectView {
+        return UIVisualEffectView(effect: UIBlurEffect(style: style))
+    }
+
+    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
 }
 
 // Models for Decoding API Response
